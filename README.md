@@ -4,5 +4,5 @@
 npm install　&& npm start
 ```
 ## 補足
-/map.html?<params> </br>
-で領域(bounds)およびactivity_typeを変えることができます
+/map.html?{FAVORITE_PARAMS} </br>
+を直接リダイレクトすることで好きな領域(bounds)およびactivity_typeを試すことができます
