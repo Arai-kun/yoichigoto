@@ -34,7 +34,7 @@ if(query !== '')
                     },
                     'paint': {
                     'line-color': '#ff0000',
-                    'line-width': 7
+                    'line-width': 4
                     }
                 });
             }
