@@ -10,6 +10,7 @@ var polyline = require('@mapbox/polyline');
 let geojson_arr = [];
 let access_token = '';
 const refresh_token = '6b91ab4184d266b1ca5edd84aded51f1d020de3b';
+const earth_radius = 6378.137;   /* km */
 
 /* GET api listing. */
 router.post('/', function(req, res, next) {
@@ -86,4 +87,14 @@ async function getSegments(query_json)
       }
     });
   });
+}
+
+/**
+ * Calculate a distance between two points
+ * @param {Array} latlongs [[x1, y1], [x2, y2]]
+ * @returns distance
+ */
+function calDistance(latlongs)
+{
+  return earth_radius * Math.acos(Math.sin(latlongs[0][1]) * Math.sin(latlongs[1][1]) + Math.cos(latlongs[0][1]) * Math.cos(latlongs[1][1]) * Math.cos((latlongs[1][0] - latlongs[0][0])));
 }
