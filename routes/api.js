@@ -94,7 +94,6 @@ async function getSegments(longlat, type)
 {
   const url = 'https://www.strava.com/api/v3/segments/explore' + 
     `?bounds=${longlat[0].y},${longlat[0].x},${longlat[1].y},${longlat[1].x}&activity_type=${type}`;
-  console.log(url);
   const options = {
     url: url,
     headers: {
@@ -103,13 +102,18 @@ async function getSegments(longlat, type)
     },
     method: 'GET'
   }
+  console.log(options);
   await new Promise((resolve, reject) => {
     request(options, (error, response, body) => {
       let data = [];
       data = JSON.parse(body)['segments'];
-      for (let i= 0; i < data.length; i++)
+      console.log(data);
+      if(data != null)
       {
-        geojson_arr.push(polyline.toGeoJSON(data[i]['points']));
+        for (let i= 0; i < data.length; i++)
+        {
+          geojson_arr.push(polyline.toGeoJSON(data[i]['points']));
+        }
       }
       resolve();
       if(error)
