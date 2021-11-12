@@ -106,9 +106,20 @@ async function getSegments(longlat, type)
   await new Promise((resolve, reject) => {
     request(options, (error, response, body) => {
       let data = [];
-      data = JSON.parse(body)['segments'];
-      console.log(data);
-      if(data != null)
+      try
+      {
+        if('segments' in JSON.parse(body))
+        {
+          data = JSON.parse(body)['segments'];
+        }
+      }
+      catch(error)
+      {
+        console.log("[IGNORE] Not return JSON formart for something reason!");
+        resolve();
+        return;
+      }
+      if(!data.length)
       {
         for (let i= 0; i < data.length; i++)
         {
