@@ -14,7 +14,7 @@ if(query !== '')
         let map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: geojson_arr[0]['coordinates'][0],
+            center: [139.598507, 35.582339],  //暫定->queryから領域の中心計算
             zoom: 11
         });
         map.on('load', () => {
