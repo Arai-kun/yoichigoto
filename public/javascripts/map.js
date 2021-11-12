@@ -5,6 +5,7 @@
  * You only need mapbox api key to work this program.
  */
 
+let center = [139.598507, 35.582339];  /* defalut */
 const query = window.location.search;
 if(query !== '')
 {
@@ -14,7 +15,7 @@ if(query !== '')
         let map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
-            center: [139.598507, 35.582339],  //暫定->queryから領域の中心計算
+            center: center,
             zoom: 11
         });
         map.on('load', () => {
@@ -34,7 +35,7 @@ if(query !== '')
                     },
                     'paint': {
                     'line-color': '#ff0000',
-                    'line-width': 4
+                    'line-width': 3
                     }
                 });
             }
@@ -58,6 +59,11 @@ async function get_segments(bounds_params)
             'ne_long': params.get('ne_long'),
             'activity_type': 'running'
         }
+
+        /* Set center point */
+        center[0] = (Number(data['sw_long']) + Number(data['ne_long'])) / 2;
+        center[1] = (Number(data['sw_lat']) + Number(data['ne_lat'])) / 2;
+
         /* Call Strava API anf Decode */
         const res = await fetch('/api', {
             headers: {

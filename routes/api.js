@@ -1,5 +1,5 @@
 /**
- * 2021/11/09
+ * 2021/11/11
  * As test at first, hardcording kinds of auth information.
  */
 
@@ -24,44 +24,31 @@ router.post('/', function(req, res, next) {
   ];
   latlong_arr.push(latlong);
   refreshToken()
-  .then(() => {
-    while((calDistance(latlong_arr[latlong_arr.length - 1]) / Math.sqrt(2)) > MIN_UNIT)
-    {
-      for(let i = 0; i < 4 ** divCount; i++)
+    .then(() => {
+      while((calDistance(latlong_arr[latlong_arr.length - 1]) / Math.sqrt(2)) > MIN_UNIT)
       {
-        divArea(latlong_arr[i + (((4 ** divCount) - 1) / 3)]);
+        for(let i = 0; i < 4 ** divCount; i++)
+        {
+          divArea(latlong_arr[i + (((4 ** divCount) - 1) / 3)]);
+        }
+        divCount++;
       }
-      divCount++;
-    }
-    console.log(latlong_arr.length);
-    //console.log(latlong_arr);
-    acType = req.body['activity_type'];
-    getAllSegments()
-      .then(() => {
-        res.json(geojson_arr);
-      })
-      .catch(error => {
-        console.log(error);
-        res.sendStatus(500);
-      });
-    /*
-      getSegments(latlong_arr[0], req.body['activity_type'])
-      .then(() => {
-        res.json(geojson_arr);
-      })
-      .catch(error => {
-        console.log(error);
-        res.sendStatus(500);
-      });
-    */
-  })
-  .catch(error => {
-    console.log(error);
-    res.sendStatus(500);
-  });
+      console.log("Number of area: " + latlong_arr.length);
+      acType = req.body['activity_type'];
+      getAllSegments()
+        .then(() => {
+          res.json(geojson_arr);
+        })
+        .catch(error => {
+          console.log(error);
+          res.sendStatus(500);
+        });
+    })
+    .catch(error => {
+      console.log(error);
+      res.sendStatus(500);
+    });
 });
-
-module.exports = router;
 
 async function refreshToken()
 {
@@ -106,6 +93,7 @@ async function getSegments(longlat, type)
   await new Promise((resolve, reject) => {
     request(options, (error, response, body) => {
       let data = [];
+
       try
       {
         if('segments' in JSON.parse(body))
@@ -116,16 +104,19 @@ async function getSegments(longlat, type)
       }
       catch(error)
       {
-        console.log("[IGNORE] Not return JSON formart for something reason!");
+        console.log("Not return JSON formart for something reason!");
+        resolve();
         return;
       }
-      if(!data.length)
+
+      if(data.length !== 0)
       {
         for (let i= 0; i < data.length; i++)
         {
           geojson_arr.push(polyline.toGeoJSON(data[i]['points']));
         }
       }
+
       resolve();
       if(error)
       {
@@ -135,14 +126,13 @@ async function getSegments(longlat, type)
   });
 }
 
-async function getAllSegments()
+function getAllSegments()
 {
-  for await (let latlong of latlong_arr)
-  {
-    console.log(latlong);
-    getSegments(latlong, acType);
-    return;   //Only once for debug
-  }
+  let task = [];
+  latlong_arr.forEach(latlong => {
+    task.push(getSegments(latlong, acType))
+  });
+  return Promise.all(task);
 }
 
 /**
@@ -157,6 +147,9 @@ function calDistance(latlong)
    * Math.cos(latlong[1].y * (Math.PI / 180)) * Math.cos((latlong[1].x - latlong[0].x) * (Math.PI / 180)));
 }
 
+/**
+ * Divide one area to four ones.
+ */
 function divArea(latlong)
 {
   let buf_x = (latlong[1].x + latlong[0].x) / 2;
@@ -182,3 +175,5 @@ function divArea(latlong)
     {x: buf_x, y: buf_y}
   ]);
 }
+
+module.exports = router;
