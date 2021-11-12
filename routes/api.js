@@ -111,12 +111,12 @@ async function getSegments(longlat, type)
         if('segments' in JSON.parse(body))
         {
           data = JSON.parse(body)['segments'];
+          console.log(data);
         }
       }
       catch(error)
       {
         console.log("[IGNORE] Not return JSON formart for something reason!");
-        resolve();
         return;
       }
       if(!data.length)
@@ -141,6 +141,7 @@ async function getAllSegments()
   {
     console.log(latlong);
     getSegments(latlong, acType);
+    return;   //Only once for debug
   }
 }
 
