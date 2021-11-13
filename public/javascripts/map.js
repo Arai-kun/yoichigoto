@@ -54,7 +54,7 @@ if(query !== '')
         point_arr.push(center);
         get_spots(query, point_arr)
             .then(spotjson_arr => {
-                map.loadImage('https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png', (error, image) => {
+                map.loadImage(encodeURI('https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png'), (error, image) => {
                     if (error) throw error;
                     map.addImage('custom-marker', image);
                     let features = [];
