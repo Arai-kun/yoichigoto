@@ -9,8 +9,8 @@ npm install　&& npm start
 ## 補足
 自動でリダレクトされるデフォルトURLのパラメータ部分は好きに変えられます </br>
 - lat, long: 各経度緯度
-- types: Find APIの検索カテゴリ
-- radius: 正方形領域の中心から展開される施設検索円の半径
+- types: Find APIの検索カテゴリ(予め定義されています 参考: https://developers.google.com/maps/documentation/places/web-service/supported_types　)
+- radius: 正方形領域の中心から展開される施設検索円の半径(m)
 - keyword: 検索キーワード
 
 ## メモ
